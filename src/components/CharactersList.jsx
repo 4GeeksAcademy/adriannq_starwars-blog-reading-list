@@ -51,7 +51,6 @@ export const CharacterList = () => {
                   variant="outline-warning"
                   onClick={() => {
                     addFavorite(people.uid, people.name, "people.type");
-                    console.log(people);
                   }}
                 >
                   ♡
