@@ -9,7 +9,8 @@ export const PlanetList = () => {
   let navigate = useNavigate();
 
   const [characterList, setCharacterList] = useState([]);
-  const { addFavorite } = useContext(FavoritesContext);
+  const { favorites, addFavorite, deleteFavorite } =
+    useContext(FavoritesContext);
 
   const getPlanetList = () => {
     fetch("https://www.swapi.tech/api/planets/", { method: "GET" })
@@ -19,6 +20,8 @@ export const PlanetList = () => {
       })
       .catch((err) => console.error(err));
   };
+  const isFavorite = (uid) =>
+    favorites.some((fav) => fav.uid === uid && fav.type === "planets");
 
   useEffect(() => {
     getPlanetList();
@@ -48,12 +51,16 @@ export const PlanetList = () => {
                   Learn more!
                 </Button>
                 <Button
-                  variant="outline-warning"
+                  variant={
+                    isFavorite(planet.uid) ? "warning" : "outline-warning"
+                  }
                   onClick={() => {
-                    addFavorite(planet.uid, planet.name, "planets");
+                    !isFavorite(planet.uid, "planets")
+                      ? addFavorite(planet.uid, planet.name, "planets")
+                      : deleteFavorite(planet.uid);
                   }}
                 >
-                  ♡
+                  {isFavorite(planet.uid, "planets") ? "❤" : "♡"}
                 </Button>
               </Card.Footer>
             </Card>

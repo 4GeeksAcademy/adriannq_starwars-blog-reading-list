@@ -9,7 +9,8 @@ export const CharacterList = () => {
   let navigate = useNavigate();
 
   const [characterList, setCharacterList] = useState([]);
-  const { addFavorite } = useContext(FavoritesContext);
+  const { favorites, addFavorite, deleteFavorite } =
+    useContext(FavoritesContext);
 
   const getCharacterList = () => {
     fetch("https://www.swapi.tech/api/people/", { method: "GET" })
@@ -23,6 +24,10 @@ export const CharacterList = () => {
   useEffect(() => {
     getCharacterList();
   }, []);
+
+  const isFavorite = (uid) =>
+    favorites.some((fav) => fav.uid === uid && fav.type === "people");
+
   return (
     <>
       <h2 className="text-danger">Characters</h2>
@@ -48,12 +53,16 @@ export const CharacterList = () => {
                   Learn more!
                 </Button>
                 <Button
-                  variant="outline-warning"
+                  variant={
+                    isFavorite(people.uid) ? "warning" : "outline-warning"
+                  }
                   onClick={() => {
-                    addFavorite(people.uid, people.name, "people.type");
+                    !isFavorite(people.uid, "people")
+                      ? addFavorite(people.uid, people.name, "people")
+                      : deleteFavorite(people.uid);
                   }}
                 >
-                  ♡
+                  {isFavorite(people.uid, "people") ? "❤" : "♡"}
                 </Button>
               </Card.Footer>
             </Card>

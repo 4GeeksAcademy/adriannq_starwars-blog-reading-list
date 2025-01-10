@@ -9,7 +9,8 @@ export const StarshipsList = () => {
   let navigate = useNavigate();
 
   const [starshipsList, setStarshipsList] = useState([]);
-  const { addFavorite } = useContext(FavoritesContext);
+  const { favorites, addFavorite, deleteFavorite } =
+    useContext(FavoritesContext);
 
   const getStarshipsList = () => {
     fetch("https://www.swapi.tech/api/starships/", { method: "GET" })
@@ -19,6 +20,8 @@ export const StarshipsList = () => {
       })
       .catch((err) => console.error(err));
   };
+  const isFavorite = (uid) =>
+    favorites.some((fav) => fav.uid === uid && fav.type === "starships");
 
   useEffect(() => {
     getStarshipsList();
@@ -48,12 +51,16 @@ export const StarshipsList = () => {
                   Learn more!
                 </Button>
                 <Button
-                  variant="outline-warning"
+                  variant={
+                    isFavorite(starship.uid) ? "warning" : "outline-warning"
+                  }
                   onClick={() => {
-                    addFavorite(starship.uid, starship.name, "starships");
+                    !isFavorite(starship.uid, "starships")
+                      ? addFavorite(starship.uid, starship.name, "starships")
+                      : deleteFavorite(starship.uid);
                   }}
                 >
-                  ♡
+                  {isFavorite(starship.uid, "starships") ? "❤" : "♡"}
                 </Button>
               </Card.Footer>
             </Card>
