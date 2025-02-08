@@ -6,37 +6,37 @@ import { useNavigate } from "react-router";
 import { FavoritesContext } from "../context/FavoritesContext";
 import { isEmpty } from "lodash";
 
-export const CharacterList = () => {
+export const FilmList = () => {
   let navigate = useNavigate();
 
-  const [characterList, setCharacterList] = useState([]);
+  const [filmsList, setFilmList] = useState([]);
   const { favorites, addFavorite, deleteFavorite } =
     useContext(FavoritesContext);
 
-  const getCharacterList = () => {
+  const getFilmList = () => {
     fetch(
-      "https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/characters",
+      "https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/films",
       { method: "GET" },
     )
       .then((res) => res.json())
       .then((response) => {
-        setCharacterList(response);
+        setFilmList(response);
       })
       .catch((err) => console.error(err));
   };
 
   useEffect(() => {
-    getCharacterList();
+    getFilmList();
   }, []);
 
   return (
     <>
-      <h2 className="text-danger">Characters</h2>
+      <h2 className="text-danger">Films</h2>
       <div className="d-flex overflow-auto gap-3">
-        {!isEmpty(characterList) ? (
-          characterList.map((people) => {
+        {!isEmpty(filmsList) ? (
+          filmsList.map((people) => {
             const favorite = favorites.find(
-              (fav) => fav.external_id === people.id && fav.type === "People",
+              (fav) => fav.external_id === people.id && fav.type === "Films",
             );
 
             return (
@@ -45,18 +45,18 @@ export const CharacterList = () => {
                 style={{ minWidth: "18rem", maxWidth: "18rem" }}
               >
                 <Card.Img
-                  style={{ maxHeight: "20rem", minHeight: "16rem" }}
+                  className="img-fluid"
                   variant="top"
                   src={people.url || "https://placehold.co/600x400"}
-                  alt={people.name}
+                  alt={people.title}
                 />
                 <Card.Body>
-                  <Card.Title>{people.name}</Card.Title>
+                  <Card.Title>{people.title}</Card.Title>
                 </Card.Body>
                 <Card.Footer className="d-flex justify-content-between">
                   <Button
                     variant="primary"
-                    onClick={() => navigate(`/characters/${people.id}`)}
+                    onClick={() => navigate(`/films/${people.id}`)}
                   >
                     Learn more!
                   </Button>
@@ -65,7 +65,7 @@ export const CharacterList = () => {
                     onClick={() => {
                       favorite
                         ? deleteFavorite(favorite.id, 1)
-                        : addFavorite(1, people.id, people.name, "People");
+                        : addFavorite(1, people.id, people.title, "Films");
                     }}
                   >
                     {favorite ? "❤" : "♡"}
@@ -76,7 +76,7 @@ export const CharacterList = () => {
           })
         ) : (
           <div className="alert alert-warning text-center">
-            No Characters Available
+            No Films Available
           </div>
         )}
       </div>

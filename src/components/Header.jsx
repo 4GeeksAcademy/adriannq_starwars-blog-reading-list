@@ -37,12 +37,12 @@ export const Header = () => {
               {favorites.length > 0 ? (
                 favorites.map((favorite) => (
                   <div
-                    key={favorite.uid}
+                    key={favorite.id}
                     className="d-flex align-items-center justify-content-between px-3"
                   >
                     <Dropdown.Item
                       onClick={() =>
-                        navigate(`/${favorite.type}/${favorite.uid}`)
+                        navigate(`/${favorite.type}/${favorite.id}`)
                       }
                     >
                       {favorite.name}
@@ -50,7 +50,7 @@ export const Header = () => {
                     <Badge
                       bg="danger"
                       style={{ cursor: "pointer" }}
-                      onClick={() => deleteFavorite(favorite.uid)}
+                      onClick={() => deleteFavorite(favorite.id, 1)}
                     >
                       X
                     </Badge>

@@ -2,25 +2,25 @@ import { useEffect, useState } from "react";
 import { Card, Container, Image } from "react-bootstrap";
 import { useParams } from "react-router";
 
-export const CharacterPage = () => {
-  let { characterId } = useParams();
+export const FilmPage = () => {
+  let { filmId } = useParams();
 
-  const [character, setCharacter] = useState([]);
-  const getCharacterData = () => {
+  const [film, setFilm] = useState([]);
+  const getFilmData = () => {
     fetch(
-      `https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/characters/${characterId}`,
+      `https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/films/${filmId}`,
       {
         method: "GET",
       },
     )
       .then((res) => res.json())
       .then((response) => {
-        setCharacter(response);
+        setFilm(response);
       });
   };
   useEffect(() => {
-    getCharacterData();
-  }, []);
+    getFilmData();
+  }, [filmId]);
   return (
     <Container className="d-flex justify-content-center mt-5">
       <Card
@@ -29,20 +29,20 @@ export const CharacterPage = () => {
       >
         <div className="d-flex align-items-center flex-column text-center">
           <Image
-            src={character.url || "https://placehold.co/800x600"}
-            alt={character.name}
+            src={film.url || "https://placehold.co/800x600"}
+            alt={film.title}
             className="rounded-4 mb-3"
             style={{ maxWidth: "300px", width: "100%" }}
           />
-          <h2 className="fw-bold text-primary">{character.name}</h2>
+          <h2 className="fw-bold text-primary">{film.title}</h2>
+          <p className="text-muted">{film.opening_crawl}</p>
         </div>
 
         <Container className="d-flex flex-wrap justify-content-around mt-4">
-          <InfoBlock label="Birth Year" value={character.birth_year} />
-          <InfoBlock label="Gender" value={character.gender} />
-          <InfoBlock label="Height" value={`${character.height} cm`} />
-          <InfoBlock label="Skin Color" value={character.skin_color} />
-          <InfoBlock label="Eye Color" value={character.eye_color} />
+          <InfoBlock label="Director" value={film.director} />
+          <InfoBlock label="Producer" value={film.producer} />
+          <InfoBlock label="Release Date" value={film.release_date} />
+          <InfoBlock label="Episode ID" value={film.episode_id} />
         </Container>
       </Card>
     </Container>
@@ -52,6 +52,6 @@ export const CharacterPage = () => {
 const InfoBlock = ({ label, value }) => (
   <div className="text-center m-2">
     <h5 className="text-secondary">{label}</h5>
-    <p className="fw-semibold">{value}</p>
+    <p className="fw-semibold">{value || "Unknown"}</p>
   </div>
 );

@@ -1,71 +1,89 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Button, Card } from "react-bootstrap";
 
 import { useNavigate } from "react-router";
 import { FavoritesContext } from "../context/FavoritesContext";
+import { isEmpty } from "lodash";
 
 export const StarshipsList = () => {
   let navigate = useNavigate();
 
-  const [starshipsList, setStarshipsList] = useState([]);
+  const [starshipList, setStarshipList] = useState([]);
   const { favorites, addFavorite, deleteFavorite } =
     useContext(FavoritesContext);
 
-  const getStarshipsList = () => {
-    fetch("https://www.swapi.tech/api/starships/", { method: "GET" })
+  const getStarshipList = () => {
+    fetch(
+      "https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/starships",
+      { method: "GET" },
+    )
       .then((res) => res.json())
       .then((response) => {
-        setStarshipsList(response.results);
+        setStarshipList(response);
       })
       .catch((err) => console.error(err));
   };
-  const isFavorite = (uid) =>
-    favorites.some((fav) => fav.uid === uid && fav.type === "starships");
 
   useEffect(() => {
-    getStarshipsList();
+    getStarshipList();
   }, []);
+
   return (
     <>
-      <h2 className="text-danger mt-3">Starships</h2>
+      <h2 className="text-danger">Starships</h2>
       <div className="d-flex overflow-auto gap-3">
-        {starshipsList.map((starship) => {
-          return (
-            <Card style={{ minWidth: "18rem" }}>
-              <Card.Img
-                variant="top"
-                src="https://placehold.co/600x400"
-                alt="Placeholder"
-              />
-              <Card.Body>
-                <Card.Title>{starship.name}</Card.Title>
-              </Card.Body>
-              <Card.Footer className="d-flex justify-content-between">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    navigate(`/starships/${starship.uid}`);
-                  }}
-                >
-                  Learn more!
-                </Button>
-                <Button
-                  variant={
-                    isFavorite(starship.uid) ? "warning" : "outline-warning"
-                  }
-                  onClick={() => {
-                    !isFavorite(starship.uid, "starships")
-                      ? addFavorite(starship.uid, starship.name, "starships")
-                      : deleteFavorite(starship.uid);
-                  }}
-                >
-                  {isFavorite(starship.uid, "starships") ? "❤" : "♡"}
-                </Button>
-              </Card.Footer>
-            </Card>
-          );
-        })}
+        {!isEmpty(starshipList) ? (
+          starshipList.map((starship) => {
+            const favorite = favorites.find(
+              (fav) =>
+                fav.external_id === starship.id && fav.type === "Starships",
+            );
+
+            return (
+              <Card
+                key={starship.id}
+                style={{ minWidth: "18rem", maxWidth: "18rem" }}
+              >
+                <Card.Img
+                  variant="top"
+                  src={starship.url || "https://placehold.co/600x400"}
+                  alt={starship.name}
+                />
+                <Card.Body>
+                  <Card.Title>{starship.name}</Card.Title>
+                </Card.Body>
+                <Card.Footer className="d-flex justify-content-between">
+                  <Button
+                    variant="primary"
+                    onClick={() => navigate(`/starships/${starship.id}`)}
+                  >
+                    Learn more!
+                  </Button>
+                  <Button
+                    variant={favorite ? "warning" : "outline-warning"}
+                    onClick={() => {
+                      favorite
+                        ? deleteFavorite(favorite.id, 1)
+                        : addFavorite(
+                            1,
+                            starship.id,
+                            starship.name,
+                            "Starships",
+                          );
+                    }}
+                  >
+                    {favorite ? "❤" : "♡"}
+                  </Button>
+                </Card.Footer>
+              </Card>
+            );
+          })
+        ) : (
+          <div className="alert alert-warning text-center">
+            No Starships Available
+          </div>
+        )}
       </div>
     </>
   );

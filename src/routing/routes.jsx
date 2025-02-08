@@ -1,7 +1,8 @@
 import { LandingPage } from "../pages/LandingPage";
 import { CharacterPage } from "../pages/DetailsPages/CharacterPage";
 import { PlanetPage } from "../pages/DetailsPages/PlanetPage";
-import { FilmPage } from "../pages/DetailsPages/StarshipsPage";
+import { FilmPage } from "../pages/DetailsPages/FilmPage";
+import { StarshipPage } from "../pages/DetailsPages/StarshipsPage";
 
 export const routeConfig = [
   {
@@ -11,17 +12,22 @@ export const routeConfig = [
   },
   {
     name: "CharacterPage",
-    path: `/people/:character`,
+    path: `/characters/:characterId`,
     page: <CharacterPage />,
   },
   {
-    name: "PanetPage",
-    path: `/planets/:planet`,
+    name: "PlanetPage",
+    path: `/planets/:planetId`,
     page: <PlanetPage />,
   },
   {
     name: "FilmPage",
-    path: `/starships/:starship`,
+    path: `/films/:filmId`,
     page: <FilmPage />,
+  },
+  {
+    name: "StarshipPage",
+    path: `/starships/:starshipId`,
+    page: <StarshipPage />,
   },
 ];

@@ -2,55 +2,59 @@ import { useEffect, useState } from "react";
 import { Card, Container, Image } from "react-bootstrap";
 import { useParams } from "react-router";
 
-export const FilmPage = () => {
-  let { starship } = useParams();
+export const StarshipPage = () => {
+  let { starshipId } = useParams();
 
-  const [starshipProperties, setStarshipProperties] = useState([]);
-  const [starshipDescription, setStarshipDescription] = useState([]);
+  const [starship, setStarship] = useState([]);
+
   const getStarshipData = () => {
-    fetch(`https://www.swapi.tech/api/starships/${starship}`, {
-      method: "GET",
-    })
+    fetch(
+      `https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/starships/${starshipId}`,
+      {
+        method: "GET",
+      },
+    )
       .then((res) => res.json())
       .then((response) => {
-        setStarshipProperties(response.result.properties);
-        setStarshipDescription(response.result.description);
+        setStarship(response);
       });
   };
   useEffect(() => {
     getStarshipData();
   }, []);
   return (
-    <Card>
-      <Container className="d-flex">
-        <Image src="https://placehold.co/800x600" />
-        <div className="text-center m-3">
-          <h3>{starshipProperties.name}</h3>
-          <p>{starshipDescription}</p>
+    <Container className="d-flex justify-content-center mt-5">
+      <Card
+        className="p-4 shadow-lg rounded-4"
+        style={{ maxWidth: "900px", width: "100%" }}
+      >
+        <div className="d-flex align-items-center flex-column text-center">
+          <Image
+            src={starship.url || "https://placehold.co/800x600"}
+            alt={starship.name}
+            className="rounded-4 mb-3"
+            style={{ maxWidth: "300px", width: "100%" }}
+          />
+          <h2 className="fw-bold text-primary">{starship.name}</h2>
         </div>
-      </Container>
-      <Container className="d-flex justify-content-between mt-2">
-        <div>
-          <h4>Name</h4>
-          <p>{starshipProperties.name}</p>
-        </div>
-        <div>
-          <h4>Passengers</h4>
-          <p>{starshipProperties.passengers}</p>
-        </div>
-        <div>
-          <h4>Cost In Credits</h4>
-          <p>{starshipProperties.cost_in_credits}</p>
-        </div>
-        <div>
-          <h4>Consumables</h4>
-          <p>{starshipProperties.consumables}</p>
-        </div>
-        <div>
-          <h4>Max Speed</h4>
-          <p>{starshipProperties.max_atmosphering_speed}</p>
-        </div>
-      </Container>
-    </Card>
+
+        <Container className="d-flex flex-wrap justify-content-around mt-4">
+          <InfoBlock label="Model" value={starship.model} />
+          <InfoBlock label="Cost in Credits" value={starship.cost_in_credits} />
+          <InfoBlock label="Consumables" value={starship.consumables} />
+          <InfoBlock
+            label="Max Speed"
+            value={starship.max_atmosphering_speed}
+          />
+        </Container>
+      </Card>
+    </Container>
   );
 };
+
+const InfoBlock = ({ label, value }) => (
+  <div className="text-center m-2">
+    <h5 className="text-secondary">{label}</h5>
+    <p className="fw-semibold">{value || "Unknown"}</p>
+  </div>
+);
