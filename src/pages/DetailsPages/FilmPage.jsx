@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { Card, Container, Image } from "react-bootstrap";
 import { useParams } from "react-router";
+import { baseUrl } from "../../services/api";
 
 export const FilmPage = () => {
   let { filmId } = useParams();
 
   const [film, setFilm] = useState([]);
   const getFilmData = () => {
-    fetch(
-      `https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/films/${filmId}`,
-      {
-        method: "GET",
-      },
-    )
+    fetch(`${baseUrl}/films/${filmId}`, {
+      method: "GET",
+    })
       .then((res) => res.json())
       .then((response) => {
         setFilm(response);

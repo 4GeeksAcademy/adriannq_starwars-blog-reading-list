@@ -1,23 +1,18 @@
 import { useContext, useEffect, useState } from "react";
-
 import { Button, Card } from "react-bootstrap";
-
 import { useNavigate } from "react-router";
-import { FavoritesContext } from "../context/FavoritesContext";
 import { isEmpty } from "lodash";
+import { baseUrl } from "../services/api";
+import { FavoritesContext } from "../context/FavoritesContext";
 
 export const StarshipsList = () => {
   let navigate = useNavigate();
-
   const [starshipList, setStarshipList] = useState([]);
   const { favorites, addFavorite, deleteFavorite } =
     useContext(FavoritesContext);
 
   const getStarshipList = () => {
-    fetch(
-      "https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/starships",
-      { method: "GET" },
-    )
+    fetch(`${baseUrl}/starships`, { method: "GET" })
       .then((res) => res.json())
       .then((response) => {
         setStarshipList(response);
@@ -35,11 +30,10 @@ export const StarshipsList = () => {
       <div className="d-flex overflow-auto gap-3">
         {!isEmpty(starshipList) ? (
           starshipList.map((starship) => {
-            const favorite = favorites.find(
+            const isFavorite = favorites.some(
               (fav) =>
                 fav.external_id === starship.id && fav.type === "Starships",
             );
-
             return (
               <Card
                 key={starship.id}
@@ -61,19 +55,14 @@ export const StarshipsList = () => {
                     Learn more!
                   </Button>
                   <Button
-                    variant={favorite ? "warning" : "outline-warning"}
+                    variant={isFavorite ? "warning" : "outline-warning"}
                     onClick={() => {
-                      favorite
-                        ? deleteFavorite(favorite.id, 1)
-                        : addFavorite(
-                            1,
-                            starship.id,
-                            starship.name,
-                            "Starships",
-                          );
+                      isFavorite
+                        ? deleteFavorite(starship.id, "Starships")
+                        : addFavorite(starship.id, starship.name, "Starships");
                     }}
                   >
-                    {favorite ? "❤" : "♡"}
+                    {isFavorite ? "❤" : "♡"}
                   </Button>
                 </Card.Footer>
               </Card>

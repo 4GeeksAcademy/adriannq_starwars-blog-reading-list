@@ -7,14 +7,18 @@ import {
   Nav,
   Container,
   Badge,
+  Button,
 } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { FavoritesContext } from "../context/FavoritesContext";
+import { UserContext } from "../context/UserContext";
+import { isEmpty } from "lodash";
 
 export const Header = () => {
   let navigate = useNavigate();
 
   const { favorites, deleteFavorite } = useContext(FavoritesContext);
+  const { user, logout } = useContext(UserContext);
 
   return (
     <>
@@ -33,8 +37,15 @@ export const Header = () => {
             />
           </Navbar.Brand>
           <Nav>
+            {!isEmpty(user) ? (
+              <Button variant="danger" onClick={() => logout()}>
+                Logout
+              </Button>
+            ) : (
+              <Button onClick={() => navigate("/login")}>Login</Button>
+            )}
             <DropdownButton title={`Favorites`} variant="primary">
-              {favorites.length > 0 ? (
+              {!isEmpty(favorites) ? (
                 favorites.map((favorite) => (
                   <div
                     key={favorite.id}
@@ -50,7 +61,7 @@ export const Header = () => {
                     <Badge
                       bg="danger"
                       style={{ cursor: "pointer" }}
-                      onClick={() => deleteFavorite(favorite.id, 1)}
+                      onClick={() => deleteFavorite(favorite.id)}
                     >
                       X
                     </Badge>

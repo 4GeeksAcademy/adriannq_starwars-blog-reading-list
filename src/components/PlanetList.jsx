@@ -5,6 +5,7 @@ import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { FavoritesContext } from "../context/FavoritesContext";
 import { isEmpty } from "lodash";
+import { baseUrl } from "../services/api";
 
 export const PlanetList = () => {
   let navigate = useNavigate();
@@ -14,10 +15,7 @@ export const PlanetList = () => {
     useContext(FavoritesContext);
 
   const getPlanetList = () => {
-    fetch(
-      "https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/planets",
-      { method: "GET" },
-    )
+    fetch(`${baseUrl}/planets`, { method: "GET" })
       .then((res) => res.json())
       .then((response) => {
         setPlanetList(response);
@@ -64,8 +62,8 @@ export const PlanetList = () => {
                     variant={favorite ? "warning" : "outline-warning"}
                     onClick={() => {
                       favorite
-                        ? deleteFavorite(favorite.id, 1)
-                        : addFavorite(1, planet.id, planet.name, "Planets");
+                        ? deleteFavorite(planet.id)
+                        : addFavorite(planet.id, planet.name, "Planets");
                     }}
                   >
                     {favorite ? "❤" : "♡"}

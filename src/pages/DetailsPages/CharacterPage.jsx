@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { Card, Container, Image } from "react-bootstrap";
 import { useParams } from "react-router";
+import { baseUrl } from "../../services/api";
 
 export const CharacterPage = () => {
   let { characterId } = useParams();
 
   const [character, setCharacter] = useState([]);
   const getCharacterData = () => {
-    fetch(
-      `https://supreme-xylophone-4jgrqx9q7445fjq9x-3000.app.github.dev/characters/${characterId}`,
-      {
-        method: "GET",
-      },
-    )
+    fetch(`${baseUrl}/characters/${characterId}`, {
+      method: "GET",
+    })
       .then((res) => res.json())
       .then((response) => {
         setCharacter(response);

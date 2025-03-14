@@ -8,9 +8,13 @@ function App() {
     <>
       <Header />
       <Routes>
-        {routeConfig.map((route) => {
-          return <Route path={route.path} element={route.page} />;
-        })}
+        <Route>
+          {routeConfig.map((route) => {
+            return (
+              <Route key={route.name} path={route.path} element={route.page} />
+            );
+          })}
+        </Route>
       </Routes>
     </>
   );
